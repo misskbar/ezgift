@@ -1,9 +1,6 @@
 package com.example.ezgift.ui.authenticate
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -36,6 +33,7 @@ import com.example.ezgift.ui.theme.EzGiftTheme
 import com.example.ezgift.ui.theme.Primary
 import com.example.ezgift.utils.StringUtils
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi
 @Composable
@@ -48,7 +46,10 @@ fun SignUp(onSignUpClicked: () -> Unit) {
     var password by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val offset = remember { mutableStateOf(0.5f) }
+    val scrollState = rememberScrollState()
+    val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
+
+
     val datePicker =
         MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select date")
@@ -57,16 +58,8 @@ fun SignUp(onSignUpClicked: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .scrollable(
-                orientation = Orientation.Vertical,
-                // state for Scrollable, describes how consume scroll amount
-                state = rememberScrollableState { delta ->
-                    offset.value = offset.value + delta // update the state
-                    delta // indicate that we consumed all the pixels available
-                }
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Spacer(modifier = Modifier.height(50.dp))
@@ -80,50 +73,52 @@ fun SignUp(onSignUpClicked: () -> Unit) {
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
+        if (isSocialAuthEnabled) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
 
-            Image(
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                    .padding(10.dp),
-                painter = painterResource(R.drawable.ic_icon_facebook),
-                contentDescription = "Facebook Icon",
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Image(
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                    .padding(10.dp),
-                painter = painterResource(R.drawable.ic_icon_twitter),
-                contentDescription = "Twitter Icon",
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Image(
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                    .padding(10.dp),
-                painter = painterResource(R.drawable.ic_icon_google_plus),
-                contentDescription = "Google+ Icon",
+                Image(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                        .padding(10.dp),
+                    painter = painterResource(R.drawable.ic_icon_facebook),
+                    contentDescription = "Facebook Icon",
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                        .padding(10.dp),
+                    painter = painterResource(R.drawable.ic_icon_twitter),
+                    contentDescription = "Twitter Icon",
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                        .padding(10.dp),
+                    painter = painterResource(R.drawable.ic_icon_google_plus),
+                    contentDescription = "Google+ Icon",
+                )
+            }
+
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "-------- or --------",
+                color = Color.DarkGray,
+                fontWeight = FontWeight.Normal,
+                fontSize = 15.sp
             )
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = "-------- or --------",
-            color = Color.DarkGray,
-            fontWeight = FontWeight.Normal,
-            fontSize = 15.sp
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Image(
             modifier = Modifier
@@ -131,10 +126,10 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 .border(BorderStroke(1.dp, Color.LightGray), CircleShape)
                 .padding(30.dp),
             painter = painterResource(R.drawable.ic_icon_user_avatar),
-            contentDescription = "Facebook Icon",
+            contentDescription = "User Avatar",
         )
 
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = firstName,
@@ -156,7 +151,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             )
         )
 
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = lastName,
@@ -177,7 +172,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 imeAction = ImeAction.Next
             )
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = date,
             readOnly = true,
@@ -194,7 +189,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             placeholder = { Text("Date of Birth") },
             label = { Text("Date of Birth") }
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -214,7 +209,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 imeAction = ImeAction.Next
             )
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -243,7 +238,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 imeAction = ImeAction.Done
             )
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -277,7 +272,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             )
         }
 
-        Spacer(modifier = Modifier.width(15.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             elevation = ButtonDefaults.elevation(),
             shape = CircleShape,
@@ -296,7 +291,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 fontSize = 15.sp
             )
         }
-        Spacer(modifier = Modifier.width(50.dp))
+        Spacer(modifier = Modifier.height(50.dp))
     }
 
 }

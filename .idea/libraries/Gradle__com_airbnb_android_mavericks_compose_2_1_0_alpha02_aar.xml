@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:mavericks-compose:2.1.0-alpha02@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/74ccb14b7f71482beb0712bad69b5f8e/transformed/jetified-mavericks-compose-2.1.0-alpha02/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/74ccb14b7f71482beb0712bad69b5f8e/transformed/jetified-mavericks-compose-2.1.0-alpha02/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/74ccb14b7f71482beb0712bad69b5f8e/transformed/jetified-mavericks-compose-2.1.0-alpha02/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e56e422bbc883fffb1d47d4fa186ba97/transformed/jetified-mavericks-compose-2.1.0-alpha02/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/e56e422bbc883fffb1d47d4fa186ba97/transformed/jetified-mavericks-compose-2.1.0-alpha02/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/e56e422bbc883fffb1d47d4fa186ba97/transformed/jetified-mavericks-compose-2.1.0-alpha02/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.airbnb.android/mavericks-compose/2.1.0-alpha02/74617cb29697d1316d51750bc4f1586a7d5478d6/mavericks-compose-2.1.0-alpha02-javadoc.jar!/" />

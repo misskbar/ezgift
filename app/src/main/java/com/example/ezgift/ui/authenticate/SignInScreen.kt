@@ -37,6 +37,7 @@ import com.example.ezgift.R
 import com.example.ezgift.ui.theme.EzGiftTheme
 import com.example.ezgift.ui.theme.Primary
 import com.example.ezgift.utils.StringUtils
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi
 @Composable
@@ -50,6 +51,7 @@ fun SignIn(
     var password by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
 
     Column(
         modifier = Modifier
@@ -85,47 +87,48 @@ fun SignIn(
                     fontSize = 30.sp
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                if (isSocialAuthEnabled) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
 
-                    Image(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                            .padding(10.dp),
-                        painter = painterResource(R.drawable.ic_icon_facebook),
-                        contentDescription = "Facebook Icon",
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Image(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                            .padding(10.dp),
-                        painter = painterResource(R.drawable.ic_icon_twitter),
-                        contentDescription = "Twitter Icon",
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Image(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .border(BorderStroke(1.dp, Color.Gray), CircleShape)
-                            .padding(10.dp),
-                        painter = painterResource(R.drawable.ic_icon_google_plus),
-                        contentDescription = "Google+ Icon",
+                        Image(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                                .padding(10.dp),
+                            painter = painterResource(R.drawable.ic_icon_facebook),
+                            contentDescription = "Facebook Icon",
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Image(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                                .padding(10.dp),
+                            painter = painterResource(R.drawable.ic_icon_twitter),
+                            contentDescription = "Twitter Icon",
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Image(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .border(BorderStroke(1.dp, Color.Gray), CircleShape)
+                                .padding(10.dp),
+                            painter = painterResource(R.drawable.ic_icon_google_plus),
+                            contentDescription = "Google+ Icon",
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(R.string.title_manual_registration),
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 15.sp
                     )
                 }
-
-                Text(
-                    text = stringResource(R.string.title_manual_registration),
-                    color = Color.DarkGray,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 15.sp
-                )
-
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
