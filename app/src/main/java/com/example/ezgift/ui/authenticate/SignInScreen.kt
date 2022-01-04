@@ -42,7 +42,7 @@ import com.example.ezgift.utils.StringUtils
 @Composable
 fun SignIn(
     onSignInClicked: () -> Unit,
-    onForgotPwdClicked: () -> Unit, ,
+    onForgotPwdClicked: () -> Unit,
     onSignUpClicked: () -> Unit
 ) {
 
@@ -205,7 +205,6 @@ fun SignIn(
                     )
                 }
 
-
                 Button(
                     elevation = ButtonDefaults.elevation(),
                     shape = CircleShape,
@@ -234,6 +233,6 @@ fun SignIn(
 @Composable
 fun SignInPreview() {
     EzGiftTheme {
-        SignIn(onSignInClicked = {})
+        SignIn(onSignInClicked = {}, onForgotPwdClicked = {}, onSignUpClicked = {})
     }
 }

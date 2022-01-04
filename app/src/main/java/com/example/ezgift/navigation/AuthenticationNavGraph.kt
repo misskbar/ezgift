@@ -18,7 +18,7 @@ import com.example.ezgift.ui.home.Home
 fun AuthenticationNavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String,
-    navigationActions : EzGiftNavigationActions
+    navigationActions: EzGiftNavigationActions
 ) {
     NavHost(
         navController = navController,
@@ -31,7 +31,9 @@ fun AuthenticationNavGraph(
             )
         }
         composable(EzGiftDestinations.SIGN_IN_ROUTE) {
-            SignIn(onSignInClicked = { navigationActions.navigateToHome() })
+            SignIn(onSignInClicked = { navigationActions.navigateToHome() },
+                onSignUpClicked = { navigationActions.navigateToSignUp },
+                onForgotPwdClicked = {})
         }
 
         composable(EzGiftDestinations.SIGN_UP_ROUTE) {
