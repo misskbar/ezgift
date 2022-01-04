@@ -2,6 +2,7 @@ package com.example.ezgift.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,10 +13,11 @@ import com.example.ezgift.ui.authenticate.SignIn
 import com.example.ezgift.ui.authenticate.SignUp
 import com.example.ezgift.ui.home.Home
 
+@ExperimentalComposeUiApi
 @Composable
-fun EzGiftNavGraph(
+fun AuthenticationNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = EzGiftDestinations.WELCOME_ROUTE,
+    startDestination: String,
     navigationActions : EzGiftNavigationActions
 ) {
     NavHost(

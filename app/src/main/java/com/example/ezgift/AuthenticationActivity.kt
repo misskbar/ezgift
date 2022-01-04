@@ -3,21 +3,27 @@ package com.example.ezgift
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.ezgift.app.EzGiftApp
+import androidx.navigation.compose.rememberNavController
+import com.example.ezgift.navigation.AuthenticationNavGraph
+import com.example.ezgift.navigation.EzGiftDestinations
+import com.example.ezgift.navigation.EzGiftNavigationActions
 import com.example.ezgift.ui.authenticate.ShowLottieAnimation
 import com.example.ezgift.ui.theme.EzGiftTheme
 
+
+@ExperimentalComposeUiApi
 class AuthenticationActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             EzGiftTheme {
@@ -30,19 +36,40 @@ class AuthenticationActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
 fun OnBoarding() {
     var shouldShowAnimation by rememberSaveable { mutableStateOf(true) }
-    var isUserLogged by rememberSaveable { mutableStateOf(false) }
 
     if (shouldShowAnimation) {
         ShowLottieAnimation(onAnimationFinished = { shouldShowAnimation = false })
     } else {
-//        Init nav graph
-        EzGiftApp()
+//        Init authentication nav graph
+        AuthenticationNav()
     }
 }
 
+@ExperimentalComposeUiApi
+@Composable
+fun AuthenticationNav() {
+    val navController = rememberNavController()
+    val navigationActions = remember(navController) {
+        EzGiftNavigationActions(
+            navController)
+    }
+    Row(
+        Modifier
+            .fillMaxSize()
+    ) {
+        AuthenticationNavGraph(
+            startDestination = EzGiftDestinations.WELCOME_ROUTE,
+            navController = navController,
+            navigationActions = navigationActions
+        )
+    }
+}
+
+@ExperimentalComposeUiApi
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

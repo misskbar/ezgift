@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">EzGift</string>
     <string name="title_activity_welcole">WelcomeActivity</string>
+    <string name="screen_title_sign_in">SIGN IN</string>
+    <string name="placeholder_email">Correo Electrónico</string>
+    <string name="label_email">Correo Electrónico</string>
+    <string name="placeholder_password">Password</string>
+    <string name="label_password">Password</string>
+    <string name="title_forgot_your_password">Forgot your password?</string>
+    <string name="button_title_sign_in">SIGN IN</string>
+    <string name="title_manual_registration">or use your email account:</string>
 </resources>
