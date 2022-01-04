@@ -1,4 +1,4 @@
-package com.example.ezgift.ui.authenticate
+package com.example.ezgift.presentation.ui.authenticate
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

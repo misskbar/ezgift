@@ -1,4 +1,4 @@
-package com.example.ezgift.navigation
+package com.example.ezgift.presentation.navigation
 
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController

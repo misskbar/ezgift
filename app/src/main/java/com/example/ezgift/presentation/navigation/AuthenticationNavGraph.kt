@@ -1,17 +1,15 @@
-package com.example.ezgift.navigation
+package com.example.ezgift.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ezgift.ui.authenticate.Authenticate
-import com.example.ezgift.ui.authenticate.ShowLottieAnimation
-import com.example.ezgift.ui.authenticate.SignIn
-import com.example.ezgift.ui.authenticate.SignUp
-import com.example.ezgift.ui.home.Home
+import com.example.ezgift.presentation.ui.authenticate.Authenticate
+import com.example.ezgift.presentation.ui.authenticate.SignIn
+import com.example.ezgift.presentation.ui.authenticate.SignUp
+import com.example.ezgift.presentation.ui.home.Home
 
 @ExperimentalComposeUiApi
 @Composable

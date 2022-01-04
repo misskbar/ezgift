@@ -1,4 +1,4 @@
-package com.example.ezgift.ui.theme
+package com.example.ezgift.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

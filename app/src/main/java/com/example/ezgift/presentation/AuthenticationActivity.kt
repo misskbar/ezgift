@@ -1,4 +1,4 @@
-package com.example.ezgift
+package com.example.ezgift.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,11 +13,11 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.ezgift.navigation.AuthenticationNavGraph
-import com.example.ezgift.navigation.EzGiftDestinations
-import com.example.ezgift.navigation.EzGiftNavigationActions
-import com.example.ezgift.ui.authenticate.ShowLottieAnimation
-import com.example.ezgift.ui.theme.EzGiftTheme
+import com.example.ezgift.presentation.navigation.AuthenticationNavGraph
+import com.example.ezgift.presentation.navigation.EzGiftDestinations
+import com.example.ezgift.presentation.navigation.EzGiftNavigationActions
+import com.example.ezgift.presentation.ui.authenticate.ShowLottieAnimation
+import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 
 
 @ExperimentalComposeUiApi

@@ -1,4 +1,4 @@
-package com.example.ezgift.utils
+package com.example.ezgift.presentation.utils
 
 class StringUtils {
 

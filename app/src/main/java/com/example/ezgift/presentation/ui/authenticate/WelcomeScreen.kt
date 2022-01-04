@@ -1,4 +1,4 @@
-package com.example.ezgift.ui.authenticate
+package com.example.ezgift.presentation.ui.authenticate
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -21,8 +21,8 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.ezgift.R
-import com.example.ezgift.ui.theme.EzGiftTheme
-import com.example.ezgift.ui.theme.Primary
+import com.example.ezgift.presentation.ui.theme.EzGiftTheme
+import com.example.ezgift.presentation.ui.theme.Primary
 
 @Composable
 fun Authenticate(onSignInClicked: () -> Unit, onSignUpClicked: () -> Unit) {

@@ -1,13 +1,9 @@
-package com.example.ezgift.ui.authenticate
+package com.example.ezgift.presentation.ui.authenticate
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -20,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ezgift.R
-import com.example.ezgift.ui.theme.EzGiftTheme
-import com.example.ezgift.ui.theme.Primary
-import com.example.ezgift.utils.StringUtils
+import com.example.ezgift.presentation.ui.theme.EzGiftTheme
+import com.example.ezgift.presentation.ui.theme.Primary
+import com.example.ezgift.presentation.utils.StringUtils
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi

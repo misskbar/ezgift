@@ -1,4 +1,4 @@
-package com.example.ezgift.ui.theme
+package com.example.ezgift.presentation.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
