@@ -57,7 +57,7 @@ fun Home() {
             }
         }
     ) {
-        // Screen content
+       DashBoard(cards = listOf(1,2,3,4,5))
     }
 }
 
