@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -31,7 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.example.ezgift.R
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
-import com.example.ezgift.presentation.utils.StringUtils
+import com.example.ezgift.presentation.utils.Const
+import com.example.ezgift.presentation.utils.emailValidationError
+import com.example.ezgift.presentation.utils.isEmailValid
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi
@@ -42,15 +45,19 @@ fun SignIn(
     onSignUpClicked: () -> Unit
 ) {
 
-    var email by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
-    var password by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
+    var email by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var isEmailValid by remember { mutableStateOf(true) }
+    var emailErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var password by remember { mutableStateOf(Const.EMPTY_STRING) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(Primary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -75,7 +82,7 @@ fun SignIn(
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text(
+                Text(modifier = Modifier.padding(vertical = 16.dp),
                     text = stringResource(R.string.screen_title_sign_in),
                     color = Primary,
                     fontWeight = FontWeight.Bold,
@@ -118,6 +125,7 @@ fun SignIn(
                     }
 
                     Text(
+                        modifier = Modifier.padding(vertical = 8.dp),
                         text = stringResource(R.string.title_manual_registration),
                         color = Color.DarkGray,
                         fontWeight = FontWeight.Normal,
@@ -125,14 +133,21 @@ fun SignIn(
                     )
                 }
                 OutlinedTextField(
+                    modifier = Modifier.onFocusChanged {
+                        if (!it.isFocused && email.isNotEmpty()) {
+                            isEmailValid = isEmailValid(email) && email.isNotEmpty()
+                            emailErrorMessage = emailValidationError(email)
+                        }
+                    },
+                    isError = !isEmailValid,
                     value = email,
                     onValueChange = { email = it },
                     singleLine = true,
                     trailingIcon = {
-                        IconButton(onClick = { email = StringUtils.Commons.EMPTY_STRING }) {
+                        IconButton(onClick = { email = Const.EMPTY_STRING }) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
-                                contentDescription = StringUtils.Commons.EMPTY_STRING
+                                contentDescription = Const.EMPTY_STRING
                             )
                         }
                     },
@@ -143,6 +158,25 @@ fun SignIn(
                         imeAction = ImeAction.Next
                     )
                 )
+
+                if (!isEmailValid) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 40.dp, bottom = 16.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            modifier = Modifier.clickable(enabled = true, onClick = {
+                                onSignUpClicked()
+                            }),
+                            text = emailErrorMessage,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
 
                 OutlinedTextField(
                     value = password,
@@ -174,7 +208,9 @@ fun SignIn(
                 )
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(
@@ -203,9 +239,10 @@ fun SignIn(
                     )
                 }
 
-                Button(
+                Button(modifier = Modifier.padding(bottom = 24.dp),
                     elevation = ButtonDefaults.elevation(),
                     shape = CircleShape,
+                    enabled = (email.isNotEmpty() && password.isNotEmpty() && isEmailValid),
                     onClick = { onSignInClicked() },
                     contentPadding = PaddingValues(
                         start = 100.dp,

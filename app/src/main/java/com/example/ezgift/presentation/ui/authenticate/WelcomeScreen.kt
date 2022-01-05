@@ -43,7 +43,6 @@ fun Authenticate(onSignInClicked: () -> Unit, onSignUpClicked: () -> Unit) {
             )
     ) {
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,7 +52,7 @@ fun Authenticate(onSignInClicked: () -> Unit, onSignUpClicked: () -> Unit) {
         ) {
             LottieAnimation(
                 composition = composition,
-                progress = 1.0f
+                progress = 0.8f
             )
         }
 

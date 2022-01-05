@@ -30,12 +30,14 @@ fun AuthenticationNavGraph(
         }
         composable(EzGiftDestinations.SIGN_IN_ROUTE) {
             SignIn(onSignInClicked = { navigationActions.navigateToHome() },
-                onSignUpClicked = { navigationActions.navigateToSignUp },
+                onSignUpClicked = { navigationActions.navigateToSignUp() },
                 onForgotPwdClicked = {})
         }
 
         composable(EzGiftDestinations.SIGN_UP_ROUTE) {
-            SignUp(onSignUpClicked = { navigationActions.navigateToHome() })
+            SignUp(
+                onSignUpClicked = { navigationActions.navigateToHome() },
+                onSignInClicked = { navigationActions.navigateToSignIn() })
         }
         composable(EzGiftDestinations.HOME_ROUTE) {
             Home()

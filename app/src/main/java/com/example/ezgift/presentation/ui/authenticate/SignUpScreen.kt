@@ -28,19 +28,19 @@ import androidx.compose.ui.unit.sp
 import com.example.ezgift.R
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
-import com.example.ezgift.presentation.utils.StringUtils
+import com.example.ezgift.presentation.utils.Const
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi
 @Composable
-fun SignUp(onSignUpClicked: () -> Unit) {
+fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
 
-    var firstName by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
-    var lastName by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
-    var email by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
-    var date by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
-    var password by remember { mutableStateOf(StringUtils.Commons.EMPTY_STRING) }
+    var firstName by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var lastName by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var email by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var date by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var password by remember { mutableStateOf(Const.EMPTY_STRING) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
@@ -132,10 +132,10 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             onValueChange = { firstName = it },
             singleLine = true,
             trailingIcon = {
-                IconButton(onClick = { firstName = StringUtils.Commons.EMPTY_STRING }) {
+                IconButton(onClick = { firstName = Const.EMPTY_STRING }) {
                     Icon(
                         imageVector = Icons.Filled.Clear,
-                        contentDescription = StringUtils.Commons.EMPTY_STRING
+                        contentDescription = Const.EMPTY_STRING
                     )
                 }
             },
@@ -154,10 +154,10 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             onValueChange = { lastName = it },
             singleLine = true,
             trailingIcon = {
-                IconButton(onClick = { lastName = StringUtils.Commons.EMPTY_STRING }) {
+                IconButton(onClick = { lastName = Const.EMPTY_STRING }) {
                     Icon(
                         imageVector = Icons.Filled.Clear,
-                        contentDescription = StringUtils.Commons.EMPTY_STRING
+                        contentDescription = Const.EMPTY_STRING
                     )
                 }
             },
@@ -178,7 +178,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
                 IconButton(onClick = { }) {
                     Icon(
                         imageVector = Icons.Filled.CalendarToday,
-                        contentDescription = StringUtils.Commons.EMPTY_STRING
+                        contentDescription = Const.EMPTY_STRING
                     )
                 }
             },
@@ -191,10 +191,10 @@ fun SignUp(onSignUpClicked: () -> Unit) {
             onValueChange = { email = it },
             singleLine = true,
             trailingIcon = {
-                IconButton(onClick = { email = StringUtils.Commons.EMPTY_STRING }) {
+                IconButton(onClick = { email = Const.EMPTY_STRING }) {
                     Icon(
                         imageVector = Icons.Filled.Clear,
-                        contentDescription = StringUtils.Commons.EMPTY_STRING
+                        contentDescription = Const.EMPTY_STRING
                     )
                 }
             },
@@ -259,7 +259,7 @@ fun SignUp(onSignUpClicked: () -> Unit) {
 
             Text(
                 modifier = Modifier.clickable(enabled = true, onClick = {
-                    onSignUpClicked()
+                    onSignInClicked()
                 }),
                 text = "Sign in",
                 color = Primary,
@@ -297,6 +297,6 @@ fun SignUp(onSignUpClicked: () -> Unit) {
 @Composable
 fun SignUpPreview() {
     EzGiftTheme {
-        SignUp(onSignUpClicked = {})
+        SignUp(onSignUpClicked = {}, onSignInClicked = {})
     }
 }
