@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ezgift.R
+import com.example.ezgift.presentation.ui.theme.ErrorMessage
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
 import com.example.ezgift.presentation.utils.*
@@ -76,13 +77,9 @@ fun SignIn(
     ) {
         Image(
             contentDescription = "App Logo",
-            painter = painterResource(id = R.drawable.ic_image_white_gift),
-//            modifier = Modifier
-//                .weight(1f)
+            painter = painterResource(id = R.drawable.ic_image_white_gift)
         )
         Card(
-//            modifier = Modifier
-//                .weight(2f),
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
             Column(
@@ -140,16 +137,13 @@ fun SignIn(
                     )
                 }
                 OutlinedTextField(
-                    modifier = Modifier
-                        .onFocusChanged {
-                            if (!it.isFocused && email.isNotEmpty()) {
-                                isEmailValid = isEmailValid(email) && email.isNotEmpty()
-                                emailErrorMessage = emailValidationError(email)
-                            }
-                        },
                     isError = !isEmailValid,
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        isEmailValid = isEmailValid(email) && email.isNotEmpty()
+                        emailErrorMessage = emailValidationError(email)
+                    },
                     singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = { email = Const.EMPTY_STRING }) {
@@ -176,7 +170,7 @@ fun SignIn(
                     ) {
                         Text(
                             text = emailErrorMessage,
-                            color = Color.Red,
+                            color = ErrorMessage,
                             fontWeight = FontWeight.Bold,
                             fontSize = 10.sp
                         )
@@ -184,15 +178,13 @@ fun SignIn(
                 }
 
                 OutlinedTextField(modifier = Modifier
-                    .onFocusChanged {
-                        if (!it.isFocused && password.isNotEmpty()) {
-                            isPasswordValid = isPasswordValid(password)
-                            passwordErrorMessage = passwordValidationError(password)
-                        }
-                    }
                     .padding(top = 16.dp),
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        isPasswordValid = isPasswordValid(password)
+                        passwordErrorMessage = passwordValidationError(password)
+                    },
                     singleLine = true,
                     isError = !isPasswordValid,
                     trailingIcon = {
@@ -229,7 +221,7 @@ fun SignIn(
                     ) {
                         Text(
                             text = passwordErrorMessage,
-                            color = Color.Red,
+                            color = ErrorMessage,
                             fontWeight = FontWeight.Bold,
                             fontSize = 10.sp
                         )

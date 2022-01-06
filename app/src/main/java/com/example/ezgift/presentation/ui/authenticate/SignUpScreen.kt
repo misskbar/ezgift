@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentManager
 import com.example.ezgift.R
+import com.example.ezgift.presentation.ui.theme.ErrorMessage
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
 import com.example.ezgift.presentation.utils.*
@@ -56,12 +57,17 @@ fun SignUp(
 
 //    error messages
     var emailErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var lastNameErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var firstNameErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
     var passwordErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
     var passwordConfirmErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
-    var requiredField by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var dateErrorMessage by remember { mutableStateOf("Required field") }
 
 //    validations
+    var isFirstNameValid by remember { mutableStateOf(true) }
+    var isLastNameValid by remember { mutableStateOf(true) }
     var isEmailValid by remember { mutableStateOf(true) }
+    var isDateValid by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isPasswordConfirmVisible by remember { mutableStateOf(false) }
     var isPasswordValid by remember { mutableStateOf(true) }
@@ -109,7 +115,7 @@ fun SignUp(
                         .border(BorderStroke(1.dp, Color.Gray), CircleShape)
                         .padding(10.dp),
                     painter = painterResource(R.drawable.ic_icon_facebook),
-                    contentDescription = "Facebook Icon",
+                    contentDescription = stringResource(R.string.icon_facebook_description),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
@@ -118,7 +124,7 @@ fun SignUp(
                         .border(BorderStroke(1.dp, Color.Gray), CircleShape)
                         .padding(10.dp),
                     painter = painterResource(R.drawable.ic_icon_twitter),
-                    contentDescription = "Twitter Icon",
+                    contentDescription = stringResource(R.string.icon_twitter_description),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
@@ -127,14 +133,14 @@ fun SignUp(
                         .border(BorderStroke(1.dp, Color.Gray), CircleShape)
                         .padding(10.dp),
                     painter = painterResource(R.drawable.ic_icon_google_plus),
-                    contentDescription = "Google+ Icon",
+                    contentDescription = stringResource(R.string.icon_googleplus_description),
                 )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "-------- or --------",
+                text = stringResource(R.string.separator_social_manual_registration),
                 color = Color.DarkGray,
                 fontWeight = FontWeight.Normal,
                 fontSize = 15.sp
@@ -148,12 +154,17 @@ fun SignUp(
                 .border(BorderStroke(1.dp, Color.LightGray), CircleShape)
                 .padding(30.dp),
             painter = painterResource(R.drawable.ic_icon_user_avatar),
-            contentDescription = "User Avatar",
+            contentDescription = stringResource(R.string.icon_user_avatar_description),
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = firstName,
-            onValueChange = { firstName = it },
+            onValueChange = {
+                firstName = it
+                isFirstNameValid = isNameValid(firstName) && firstName.isNotEmpty()
+                firstNameErrorMessage = nameValidationError(firstName)
+            },
+            isError = !isFirstNameValid,
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = { firstName = Const.EMPTY_STRING }) {
@@ -163,19 +174,39 @@ fun SignUp(
                     )
                 }
             },
-            placeholder = { Text("First Name") },
-            label = { Text("First Name") },
+            placeholder = { Text(stringResource(R.string.placeholder_first_name)) },
+            label = { Text(stringResource(R.string.label_first_name)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             )
         )
+        if (!isFirstNameValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = firstNameErrorMessage,
+                    color = ErrorMessage,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = lastName,
-            onValueChange = { lastName = it },
+            onValueChange = {
+                lastName = it
+                isLastNameValid = isNameValid(lastName) && lastName.isNotEmpty()
+                lastNameErrorMessage = nameValidationError(lastName)
+            },
+            isError = !isLastNameValid,
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = { lastName = Const.EMPTY_STRING }) {
@@ -185,18 +216,35 @@ fun SignUp(
                     )
                 }
             },
-            placeholder = { Text("Last Name") },
-            label = { Text("Last Name") },
+            placeholder = { Text(stringResource(R.string.placeholder_last_name)) },
+            label = { Text(stringResource(R.string.label_last_name)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             )
         )
+        if (!isLastNameValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = lastNameErrorMessage,
+                    color = ErrorMessage,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = date,
             onValueChange = { date = it },
             singleLine = true,
+            isError = !isDateValid,
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = {
@@ -209,10 +257,12 @@ fun SignUp(
                         picker.show(it, picker.toString())
                         picker.addOnPositiveButtonClickListener {
                             date = dateToString(picker.selection)
+                            isDateValid = true
                         }
 
                         picker.addOnNegativeButtonClickListener() {
                             date = Const.EMPTY_STRING
+                            isDateValid = false
                         }
                     }
 
@@ -226,18 +276,30 @@ fun SignUp(
             placeholder = { Text("Date of Birth") },
             label = { Text("Date of Birth") }
         )
+        if (!isDateValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = dateErrorMessage,
+                    color = ErrorMessage,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
-            modifier = Modifier
-                .onFocusChanged {
-                    if (!it.isFocused && email.isNotEmpty()) {
-                        isEmailValid = isEmailValid(email) && email.isNotEmpty()
-                        emailErrorMessage = emailValidationError(email)
-                    }
-                },
             isError = !isEmailValid,
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                isEmailValid = isEmailValid(email) && email.isNotEmpty()
+                emailErrorMessage = emailValidationError(email)
+            },
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = { email = Const.EMPTY_STRING }) {
@@ -263,29 +325,27 @@ fun SignUp(
             ) {
                 Text(
                     text = emailErrorMessage,
-                    color = Color.Red,
+                    color = ErrorMessage,
                     fontWeight = FontWeight.Bold,
                     fontSize = 10.sp
                 )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(modifier = Modifier
-            .onFocusChanged {
-                if (!it.isFocused && password.isNotEmpty()) {
-                    isPasswordValid = isPasswordValid(password)
-                    passwordErrorMessage = passwordValidationError(password)
-                }
-            },
+        OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                isPasswordValid = isPasswordValid(password)
+                passwordErrorMessage = passwordValidationError(password)
+            },
             singleLine = true,
             isError = !isPasswordValid,
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = "Password Toggle"
+                        contentDescription = stringResource(R.string.icon_password_description)
                     )
                 }
             },
@@ -314,30 +374,28 @@ fun SignUp(
             ) {
                 Text(
                     text = passwordErrorMessage,
-                    color = Color.Red,
+                    color = ErrorMessage,
                     fontWeight = FontWeight.Bold,
                     fontSize = 10.sp
                 )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(modifier = Modifier
-            .onFocusChanged {
-                if (!it.isFocused && passwordConfirmation.isNotEmpty()) {
-                    arePasswordsValid = arePasswordsValid(password, passwordConfirmation)
-                    passwordConfirmErrorMessage =
-                        passwordsValidationError(password, passwordConfirmation)
-                }
-            },
+        OutlinedTextField(
             value = passwordConfirmation,
-            onValueChange = { passwordConfirmation = it },
+            onValueChange = {
+                passwordConfirmation = it
+                arePasswordsValid = arePasswordsValid(password, passwordConfirmation)
+                passwordConfirmErrorMessage =
+                    passwordsValidationError(password, passwordConfirmation)
+            },
             singleLine = true,
             isError = !arePasswordsValid,
             trailingIcon = {
                 IconButton(onClick = { isPasswordConfirmVisible = !isPasswordConfirmVisible }) {
                     Icon(
                         imageVector = if (isPasswordConfirmVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = "Password Toggle"
+                        contentDescription = stringResource(R.string.icon_password_description)
                     )
                 }
             },
@@ -348,8 +406,8 @@ fun SignUp(
                     }
                 }
             ),
-            placeholder = { Text("Confirm password") },
-            label = { Text("Confirm password") },
+            placeholder = { Text(stringResource(R.string.placeholder_password_confirmation)) },
+            label = { Text(stringResource(R.string.label_password_confirmation)) },
             visualTransformation = if (!isPasswordConfirmVisible) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
@@ -366,7 +424,7 @@ fun SignUp(
             ) {
                 Text(
                     text = passwordConfirmErrorMessage,
-                    color = Color.Red,
+                    color = ErrorMessage,
                     fontWeight = FontWeight.Bold,
                     fontSize = 10.sp
                 )
@@ -381,7 +439,7 @@ fun SignUp(
                 modifier = Modifier.clickable(enabled = true, onClick = {
                     onSignUpClicked()
                 }),
-                text = "Already have an account?",
+                text = stringResource(R.string.titile_already_have_an_account),
                 color = Color.DarkGray,
                 textDecoration = TextDecoration.combine(
                     listOf(
@@ -398,7 +456,7 @@ fun SignUp(
                 modifier = Modifier.clickable(enabled = true, onClick = {
                     onSignInClicked()
                 }),
-                text = "Sign in",
+                text = stringResource(R.string.title_sign_in),
                 color = Primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp
@@ -425,7 +483,7 @@ fun SignUp(
             )
         ) {
             Text(
-                text = "SIGN UP",
+                text = stringResource(R.string.title_sign_up_uppercase),
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp

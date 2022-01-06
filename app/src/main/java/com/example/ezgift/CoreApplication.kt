@@ -1,6 +1,7 @@
 package com.example.ezgift
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +18,10 @@ open class CoreApplication: Application() {
 
     open fun getInstances(): CoreApplication? {
         return instance
+    }
+
+    open fun getContext(): Context? {
+        return applicationContext
     }
 
     override fun onCreate() {

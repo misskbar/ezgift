@@ -10,4 +10,19 @@
     <string name="button_title_sign_in">SIGN IN</string>
     <string name="title_manual_registration">or use your email account:</string>
     <string name="screen_title_sign_up">SIGN UP</string>
+    <string name="icon_facebook_description">Facebook Icon</string>
+    <string name="icon_twitter_description">Twitter Icon</string>
+    <string name="icon_googleplus_description">Google+ Icon</string>
+    <string name="separator_social_manual_registration">-------- or --------</string>
+    <string name="icon_user_avatar_description">User Avatar</string>
+    <string name="placeholder_first_name">First Name</string>
+    <string name="label_first_name">First Name</string>
+    <string name="placeholder_last_name">Last Name</string>
+    <string name="label_last_name">Last Name</string>
+    <string name="icon_password_description">Password Toggle</string>
+    <string name="placeholder_password_confirmation">Confirm password</string>
+    <string name="label_password_confirmation">Confirm password</string>
+    <string name="titile_already_have_an_account">Already have an account?</string>
+    <string name="title_sign_in">Sign in</string>
+    <string name="title_sign_up_uppercase">SIGN UP</string>
 </resources>
