@@ -1,5 +1,6 @@
 package com.example.ezgift.presentation.ui.authenticate
 
+import androidx.annotation.Nullable
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -25,32 +27,56 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.FragmentManager
 import com.example.ezgift.R
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
-import com.example.ezgift.presentation.utils.Const
+import com.example.ezgift.presentation.utils.*
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import java.util.*
 
 @ExperimentalComposeUiApi
 @Composable
-fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
+fun SignUp(
+    onSignUpClicked: () -> Unit,
+    onSignInClicked: () -> Unit,
+    @Nullable supportFragmentManager: FragmentManager?
+) {
 
+//    fields
     var firstName by remember { mutableStateOf(Const.EMPTY_STRING) }
     var lastName by remember { mutableStateOf(Const.EMPTY_STRING) }
     var email by remember { mutableStateOf(Const.EMPTY_STRING) }
     var date by remember { mutableStateOf(Const.EMPTY_STRING) }
     var password by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var passwordConfirmation by remember { mutableStateOf(Const.EMPTY_STRING) }
+
+//    error messages
+    var emailErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var passwordErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var passwordConfirmErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var requiredField by remember { mutableStateOf(Const.EMPTY_STRING) }
+
+//    validations
+    var isEmailValid by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
+    var isPasswordConfirmVisible by remember { mutableStateOf(false) }
+    var isPasswordValid by remember { mutableStateOf(true) }
+    var arePasswordsValid by remember { mutableStateOf(true) }
+
+//    ui controller
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
+
+//    firebase
     val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
 
-
-    val datePicker =
-        MaterialDatePicker.Builder.datePicker()
-            .setTitleText("Select date")
-            .build()
+    val constraintsBuilder =
+        CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
 
     Column(
         modifier = Modifier
@@ -124,9 +150,7 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
             painter = painterResource(R.drawable.ic_icon_user_avatar),
             contentDescription = "User Avatar",
         )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
@@ -147,7 +171,7 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
             )
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = lastName,
@@ -168,14 +192,31 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
                 imeAction = ImeAction.Next
             )
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = date,
-            readOnly = true,
             onValueChange = { date = it },
             singleLine = true,
+            readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    val picker = MaterialDatePicker.Builder.datePicker()
+                        .setSelection(Date().time)
+                        .setCalendarConstraints(constraintsBuilder.build())
+                        .build()
+
+                    supportFragmentManager?.let {
+                        picker.show(it, picker.toString())
+                        picker.addOnPositiveButtonClickListener {
+                            date = dateToString(picker.selection)
+                        }
+
+                        picker.addOnNegativeButtonClickListener() {
+                            date = Const.EMPTY_STRING
+                        }
+                    }
+
+                }) {
                     Icon(
                         imageVector = Icons.Filled.CalendarToday,
                         contentDescription = Const.EMPTY_STRING
@@ -185,8 +226,16 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
             placeholder = { Text("Date of Birth") },
             label = { Text("Date of Birth") }
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
+            modifier = Modifier
+                .onFocusChanged {
+                    if (!it.isFocused && email.isNotEmpty()) {
+                        isEmailValid = isEmailValid(email) && email.isNotEmpty()
+                        emailErrorMessage = emailValidationError(email)
+                    }
+                },
+            isError = !isEmailValid,
             value = email,
             onValueChange = { email = it },
             singleLine = true,
@@ -205,11 +254,33 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
                 imeAction = ImeAction.Next
             )
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        OutlinedTextField(
+        if (!isEmailValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = emailErrorMessage,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(modifier = Modifier
+            .onFocusChanged {
+                if (!it.isFocused && password.isNotEmpty()) {
+                    isPasswordValid = isPasswordValid(password)
+                    passwordErrorMessage = passwordValidationError(password)
+                }
+            },
             value = password,
             onValueChange = { password = it },
             singleLine = true,
+            isError = !isPasswordValid,
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(
@@ -234,12 +305,78 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
                 imeAction = ImeAction.Done
             )
         )
+        if (!isPasswordValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = passwordErrorMessage,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(modifier = Modifier
+            .onFocusChanged {
+                if (!it.isFocused && passwordConfirmation.isNotEmpty()) {
+                    arePasswordsValid = arePasswordsValid(password, passwordConfirmation)
+                    passwordConfirmErrorMessage =
+                        passwordsValidationError(password, passwordConfirmation)
+                }
+            },
+            value = passwordConfirmation,
+            onValueChange = { passwordConfirmation = it },
+            singleLine = true,
+            isError = !arePasswordsValid,
+            trailingIcon = {
+                IconButton(onClick = { isPasswordConfirmVisible = !isPasswordConfirmVisible }) {
+                    Icon(
+                        imageVector = if (isPasswordConfirmVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = "Password Toggle"
+                    )
+                }
+            },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController.let {
+                        it?.hide()
+                    }
+                }
+            ),
+            placeholder = { Text("Confirm password") },
+            label = { Text("Confirm password") },
+            visualTransformation = if (!isPasswordConfirmVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            )
+        )
+        if (!arePasswordsValid) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = passwordConfirmErrorMessage,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-
             Text(
                 modifier = Modifier.clickable(enabled = true, onClick = {
                     onSignUpClicked()
@@ -270,6 +407,13 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
 
         Spacer(modifier = Modifier.height(20.dp))
         Button(
+            enabled = (firstName.isNotEmpty()
+                    && lastName.isNotEmpty()
+                    && date.isNotEmpty()
+                    && email.isNotEmpty() && isEmailValid
+                    && password.isNotEmpty() && isPasswordValid
+                    && passwordConfirmation.isNotEmpty() && arePasswordsValid
+                    ),
             elevation = ButtonDefaults.elevation(),
             shape = CircleShape,
             onClick = { onSignUpClicked() },
@@ -289,7 +433,6 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(50.dp))
     }
-
 }
 
 @ExperimentalComposeUiApi
@@ -297,6 +440,10 @@ fun SignUp(onSignUpClicked: () -> Unit, onSignInClicked: () -> Unit) {
 @Composable
 fun SignUpPreview() {
     EzGiftTheme {
-        SignUp(onSignUpClicked = {}, onSignInClicked = {})
+        SignUp(
+            onSignUpClicked = {},
+            onSignInClicked = {},
+            supportFragmentManager = null
+        )
     }
 }

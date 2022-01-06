@@ -1,6 +1,8 @@
 package com.example.ezgift.presentation.ui.authenticate
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.ezgift.R
 import com.example.ezgift.presentation.ui.theme.EzGiftTheme
 import com.example.ezgift.presentation.ui.theme.Primary
-import com.example.ezgift.presentation.utils.Const
-import com.example.ezgift.presentation.utils.emailValidationError
-import com.example.ezgift.presentation.utils.isEmailValid
+import com.example.ezgift.presentation.utils.*
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 @ExperimentalComposeUiApi
@@ -45,44 +45,53 @@ fun SignIn(
     onSignUpClicked: () -> Unit
 ) {
 
+//    fields
     var email by remember { mutableStateOf(Const.EMPTY_STRING) }
-    var isEmailValid by remember { mutableStateOf(true) }
-    var emailErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
     var password by remember { mutableStateOf(Const.EMPTY_STRING) }
+
+//    error messages
+    var emailErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+    var passwordErrorMessage by remember { mutableStateOf(Const.EMPTY_STRING) }
+
+//    validations
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
     var isPasswordVisible by remember { mutableStateOf(false) }
+
+//    ui controllers
     val keyboardController = LocalSoftwareKeyboardController.current
-    val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
     val scrollState = rememberScrollState()
+
+//    firebase
+    val isSocialAuthEnabled = FirebaseRemoteConfig.getInstance().getBoolean("social_auth_enabled")
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .scrollable(scrollState, Orientation.Vertical)
             .verticalScroll(scrollState)
             .background(Primary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Image(
             contentDescription = "App Logo",
             painter = painterResource(id = R.drawable.ic_image_white_gift),
-            modifier = Modifier
-                .weight(1f)
+//            modifier = Modifier
+//                .weight(1f)
         )
-
         Card(
-            modifier = Modifier
-                .weight(2f),
+//            modifier = Modifier
+//                .weight(2f),
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-
-                Text(modifier = Modifier.padding(vertical = 16.dp),
+                Text(
+                    modifier = Modifier.padding(vertical = 16.dp),
                     text = stringResource(R.string.screen_title_sign_in),
                     color = Primary,
                     fontWeight = FontWeight.Bold,
@@ -95,7 +104,6 @@ fun SignIn(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-
                         Image(
                             modifier = Modifier
                                 .size(50.dp)
@@ -123,7 +131,6 @@ fun SignIn(
                             contentDescription = "Google+ Icon",
                         )
                     }
-
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
                         text = stringResource(R.string.title_manual_registration),
@@ -133,12 +140,13 @@ fun SignIn(
                     )
                 }
                 OutlinedTextField(
-                    modifier = Modifier.onFocusChanged {
-                        if (!it.isFocused && email.isNotEmpty()) {
-                            isEmailValid = isEmailValid(email) && email.isNotEmpty()
-                            emailErrorMessage = emailValidationError(email)
-                        }
-                    },
+                    modifier = Modifier
+                        .onFocusChanged {
+                            if (!it.isFocused && email.isNotEmpty()) {
+                                isEmailValid = isEmailValid(email) && email.isNotEmpty()
+                                emailErrorMessage = emailValidationError(email)
+                            }
+                        },
                     isError = !isEmailValid,
                     value = email,
                     onValueChange = { email = it },
@@ -163,13 +171,10 @@ fun SignIn(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 40.dp, bottom = 16.dp),
+                            .padding(start = 40.dp),
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            modifier = Modifier.clickable(enabled = true, onClick = {
-                                onSignUpClicked()
-                            }),
                             text = emailErrorMessage,
                             color = Color.Red,
                             fontWeight = FontWeight.Bold,
@@ -178,10 +183,18 @@ fun SignIn(
                     }
                 }
 
-                OutlinedTextField(
+                OutlinedTextField(modifier = Modifier
+                    .onFocusChanged {
+                        if (!it.isFocused && password.isNotEmpty()) {
+                            isPasswordValid = isPasswordValid(password)
+                            passwordErrorMessage = passwordValidationError(password)
+                        }
+                    }
+                    .padding(top = 16.dp),
                     value = password,
                     onValueChange = { password = it },
                     singleLine = true,
+                    isError = !isPasswordValid,
                     trailingIcon = {
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
@@ -207,6 +220,21 @@ fun SignIn(
                     )
                 )
 
+                if (!isPasswordValid) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 40.dp, bottom = 16.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = passwordErrorMessage,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp
+                        )
+                    }
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -239,7 +267,8 @@ fun SignIn(
                     )
                 }
 
-                Button(modifier = Modifier.padding(bottom = 24.dp),
+                Button(
+                    modifier = Modifier.padding(bottom = 24.dp),
                     elevation = ButtonDefaults.elevation(),
                     shape = CircleShape,
                     enabled = (email.isNotEmpty() && password.isNotEmpty() && isEmailValid),
@@ -268,6 +297,8 @@ fun SignIn(
 @Composable
 fun SignInPreview() {
     EzGiftTheme {
-        SignIn(onSignInClicked = {}, onForgotPwdClicked = {}, onSignUpClicked = {})
+        SignIn(onSignInClicked = {},
+            onForgotPwdClicked = {},
+            onSignUpClicked = {})
     }
 }

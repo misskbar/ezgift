@@ -1,7 +1,9 @@
 package com.example.ezgift.presentation.navigation
 
+import androidx.annotation.Nullable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +18,8 @@ import com.example.ezgift.presentation.ui.home.Home
 fun AuthenticationNavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String,
-    navigationActions: EzGiftNavigationActions
+    navigationActions: EzGiftNavigationActions,
+    @Nullable supportFragmentManager : FragmentManager?
 ) {
     NavHost(
         navController = navController,
@@ -37,7 +40,8 @@ fun AuthenticationNavGraph(
         composable(EzGiftDestinations.SIGN_UP_ROUTE) {
             SignUp(
                 onSignUpClicked = { navigationActions.navigateToHome() },
-                onSignInClicked = { navigationActions.navigateToSignIn() })
+                onSignInClicked = { navigationActions.navigateToSignIn() },
+                supportFragmentManager = supportFragmentManager)
         }
         composable(EzGiftDestinations.HOME_ROUTE) {
             Home()
