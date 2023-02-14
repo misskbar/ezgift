@@ -13,6 +13,7 @@
     <color name="dark_primary">#FFE94953</color>
     <color name="secondary">#FFDD8EA9</color>
     <color name="cream_yellow">#FFFEE37A</color>
+    <color name="error">#FFB10121</color>
 
 
 </resources>

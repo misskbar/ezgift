@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "6889970670",
+    "project_id": "ezgift-9fa5d",
+    "storage_bucket": "ezgift-9fa5d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6889970670:android:f503a7109b08f9ac980cff",
+        "android_client_info": {
+          "package_name": "com.example.ezgift"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6889970670-ho8hvt72to5b9mi85s9qeujr6jok857b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3vCiznHkKnlm2M6Q-AsAq7fGssT2Fs3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "6889970670-ho8hvt72to5b9mi85s9qeujr6jok857b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
